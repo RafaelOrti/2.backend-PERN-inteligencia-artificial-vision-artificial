@@ -3,7 +3,7 @@ const app = express();
 const cors = require('cors');
 const db = require('./db.js');
 
-const PORT = 3000;
+const PORT = 5000;
 
 const router = require('./router');
 //Middleware
