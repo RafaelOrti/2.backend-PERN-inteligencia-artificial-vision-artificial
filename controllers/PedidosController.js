@@ -1,5 +1,6 @@
-
-const { Pedido } = require('../models/index');
+const {
+    Pedido
+} = require('../models/index');
 
 const PedidosController = {};
 
@@ -36,9 +37,11 @@ PedidosController.actualizarPedido = (req, res) => {
     let datos = req.body;
     try {
 
-        Pedido.update(datos,{
-            where: { id: id }
-        })
+        Pedido.update(datos, {
+                where: {
+                    id: id
+                }
+            })
             .then(pedidoDel => {
                 res.send(`El pedido ${id} ha sido actualizada`)
             })
@@ -137,7 +140,7 @@ PedidosController.infoUsuarios = async (req, res) => {
 
 //Busqueda Avanzada de Usuarios por Nombre
 PedidosController.pedidoNombre = async (req, res) => {
-    
+
     let nombre = req.params.nombre
 
     let consulta = `SELECT  usuarios.nombre AS Nombre,
@@ -150,7 +153,7 @@ PedidosController.pedidoNombre = async (req, res) => {
                             INNER JOIN pedidos ON usuarios.id = pedidos.usuarioId 
                             INNER JOIN peliculas ON peliculas.id = pedidos.peliculaId
                     WHERE nombre LIKE '%${nombre}%'`;
-    
+
     try {
         let resultado = await Pedido.sequelize.query(consulta, {
             type: Pedido.sequelize.QueryTypes.SELECT
@@ -166,9 +169,6 @@ PedidosController.pedidoNombre = async (req, res) => {
         res.send(error)
     }
 }
-
-
-
 
 
 
@@ -198,7 +198,7 @@ PedidosController.borrarTodos = async (req, res) => {
 
 //Borrar pedidos de Ususarios por Nombre
 PedidosController.borrarNombre = async (req, res) => {
-    
+
     let nombre = req.params.nombre
 
     let consulta = `DELETE FROM pedidos 
@@ -247,5 +247,3 @@ PedidosController.borrarPorId = async (req, res) => {
 
 
 module.exports = PedidosController;
-
-

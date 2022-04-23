@@ -11,7 +11,6 @@ const {
 
 
 const constHighPassword = "JjFJ%j9$Xdim";
-
 const UsuariosController = {};
 
 
@@ -24,16 +23,13 @@ const UsuariosController = {};
 UsuariosController.registraUsuario = async (req, res) => {
 
 
-    //te devuelve por lo tanto no hace falta res
-    //Registrando un usuario
-    //console.log("Estamos dentro")
     let nombre = req.body.nombre;
     let apellido = req.body.apellido;
     let nickname = req.body.nickname;
     let edad = req.body.edad;
     let email = req.body.email;
     let password = bcrypt.hashSync(req.body.password, Number.parseInt(authConfig.rounds));
-    // let numeroCuenta = req.body.numeroCuenta
+
 
     if (/^([a-zA-Z0-9@*#]{8,15})$/.test(req.body.password) !== true) {
         return res.send(
@@ -45,7 +41,6 @@ UsuariosController.registraUsuario = async (req, res) => {
         res.send("Debes de tener más de 3 años para usar esta aplicación");
     }
 
-    //Comprobación de errores.....
     Usuario.findAll({
         where: {
 
@@ -63,7 +58,6 @@ UsuariosController.registraUsuario = async (req, res) => {
 
         }
     }).then(datosRepetidos => {
-        //console.log("Hemos pasado la fase de comprobacion")
         if (datosRepetidos == 0) {
             Usuario.create({
                 nombre: nombre,
@@ -72,10 +66,8 @@ UsuariosController.registraUsuario = async (req, res) => {
                 edad: edad,
                 email: email,
                 password: password
-                // ,
-                // numeroCuenta: numeroCuenta
+
             }).then(usuario => {
-                //console.log("este es mi amigo", usuario);
                 res.send(`Bienvenido, ${usuario.nombre}`);
             }).catch((error) => {
                 res.send(error);
@@ -86,27 +78,8 @@ UsuariosController.registraUsuario = async (req, res) => {
     }).catch(error => {
         res.send(error)
     });
-    //Guardamos en sequelize el usuario
 
 };
-
-// UsuariosController.registra = async (req, res) => {
-//     if (/^([a-zA-Z0-9@*#]{8,15})$/.test(req.body.password) !== true) {
-//       return res.send(
-//         "La contraseña debe tener al menos 8 caracteres y no más de 15 caracteres."
-//       );
-//     }
-//     try {
-//       const hash = bcrypt.hashSync(
-//         req.body.password,
-//         Number.parseInt(authConfig.rounds)
-//       );
-//       const user = await User.create({ ...req.body, password: hash });
-//       res.send(`${user.name}, bienvenid@`);
-//     } catch (error) {
-//       res.status(400).send(error);
-//     }
-//   };
 
 
 
@@ -186,8 +159,6 @@ UsuariosController.confirmarEmail = async (req, res) => {
 
                 if (bcrypt.compareSync(password, Usuario.password)) { //COMPARA CONTRASEÑA INTRODUCIDA CON CONTRASEÑA GUARDADA, TRAS DESENCRIPTAR
 
-
-
                     let token = jwt.sign({
                         usuario: Usuario
                     }, authConfig.secret, {
@@ -197,9 +168,6 @@ UsuariosController.confirmarEmail = async (req, res) => {
                     res.json({
                         usuario: Usuario,
                         token: token
-                        // ,
-                        // loginSucces: true
-                        //confirmación por si quieres
                     })
                 } else {
                     res.status(401).json({
@@ -222,20 +190,14 @@ UsuariosController.confirmarEmail = async (req, res) => {
 
 ///////////////Actualizar////////////
 
-
 //Actualiza Datos por ID
 UsuariosController.updateProfileId = async (req, res) => {
-    //console.log("rrrrrrrrrrrr");
-    //console.log(req.body);
-    
-    //console.log("rrrrrrrrrrrr");
-    // res.send(req)
+
     let id = req.params.id
     req.body.password = bcrypt.hashSync(req.body.password, Number.parseInt(authConfig.rounds));
     let datos = req.body;
 
     try {
-
         Usuario.update(datos, {
                 where: {
                     id: id
@@ -244,7 +206,6 @@ UsuariosController.updateProfileId = async (req, res) => {
             .then(actualizado => {
                 res.send(actualizado)
             })
-
     } catch (error) {
         res.send("Ha ocurrido lo siguiente:", error)
     }
@@ -253,16 +214,12 @@ UsuariosController.updateProfileId = async (req, res) => {
 
 
 
-
-
 //Actualizar contraseña del usuario por id
 UsuariosController.updatePasswordId = (req, res) => {
 
 
     let id = req.body.id;
-
     let oldPassword = req.body.oldPassword;
-
     let newPassword = req.body.newPassword;
 
     Usuario.findOne({
@@ -276,20 +233,15 @@ UsuariosController.updatePasswordId = (req, res) => {
             if (bcrypt.compareSync(oldPassword, usuarioFound.password)) {
 
                 //En caso de que el Password antiguo SI sea el correcto....
-
                 //1er paso..encriptamos el nuevo password....
 
                 newPassword = bcrypt.hashSync(newPassword, Number.parseInt(authConfig.rounds));
-
-                ////////////////////////////////7
 
                 //2do paso guardamos el nuevo password en la base de datos
 
                 let data = {
                     password: newPassword
                 }
-
-                //console.log("esto es data", data);
 
                 Usuario.update(data, {
                         where: {
@@ -304,18 +256,14 @@ UsuariosController.updatePasswordId = (req, res) => {
                             msg: `Ha ocurrido un error actualizando el password`
                         });
                     });
-
             } else {
                 res.status(401).json({
                     msg: "contraseña actual inválida"
                 });
             }
-
-
         } else {
             res.send(`Usuario no encontrado`);
         }
-
     }).catch((error => {
         res.send(error);
     }));
@@ -328,6 +276,7 @@ UsuariosController.idAdmin = (req, res) => {
     let id = req.body.id;
     let highPassword = req.body.highPassword;
     let newRol;
+
     if (highPassword === `${constHighPassword}`) {
 
         Usuario.findOne({
@@ -335,26 +284,19 @@ UsuariosController.idAdmin = (req, res) => {
                 id: id
             }
         }).then(usuarioFound => {
-
             if (usuarioFound) {
-                //console.log("holaaaaaaaaaaaaaaaaaaaaaaa", usuarioFound);
                 if (usuarioFound.rol === false) {
-
                     //En caso de que el rol antiguo SI sea el correcto....
 
                     //1er paso..encriptamos el nuevo password....
 
                     newRol = true;
 
-                    ////////////////////////////////7
-
                     //2do paso guardamos el nuevo password en la base de datos
 
                     let data = {
                         rol: newRol
                     }
-
-                    //console.log("esto es data", data);
 
                     Usuario.update(data, {
                             where: {
@@ -369,22 +311,17 @@ UsuariosController.idAdmin = (req, res) => {
                                 msg: `Ha ocurrido un error actualizando el password`
                             });
                         });
-
                 } else {
                     res.status(401).json({
                         msg: "Tu usuario ya es Admin"
                     });
                 }
-
-
             } else {
                 res.send(`Usuario no encontrado`);
             }
-
         }).catch((error => {
             res.send(error);
         }));
-
     } else {
         res.send(`Contraseña de admin incorrecta`);
     }
@@ -398,6 +335,7 @@ UsuariosController.degradeProfileId = (req, res) => {
     let id = req.body.id;
     let highPassword = req.body.highPassword;
     let newRol;
+
     if (highPassword === `${constHighPassword}`) {
 
         Usuario.findOne({
@@ -405,17 +343,12 @@ UsuariosController.degradeProfileId = (req, res) => {
                 id: id
             }
         }).then(usuarioFound => {
-
             if (usuarioFound) {
-
                 if (usuarioFound.rol === true) {
-
                     //En caso de que el rol antiguo SI sea el correcto....
-
                     //1er paso..encriptamos el nuevo password....
 
                     newRol = false;
-
                     ////////////////////////////////7
 
                     //2do paso guardamos el nuevo password en la base de datos
@@ -423,8 +356,6 @@ UsuariosController.degradeProfileId = (req, res) => {
                     let data = {
                         rol: newRol
                     }
-
-                    //console.log("esto es data", data);
 
                     Usuario.update(data, {
                             where: {
@@ -439,22 +370,17 @@ UsuariosController.degradeProfileId = (req, res) => {
                                 msg: `Ha ocurrido un error actualizando el password`
                             });
                         });
-
                 } else {
                     res.status(401).json({
                         msg: "Tu usuario ya es Auth"
                     });
                 }
-
-
             } else {
                 res.send(`Usuario no encontrado`);
             }
-
         }).catch((error => {
             res.send(error);
         }));
-
     } else {
         res.send(`Contraseña de admin incorrecta`);
     }
@@ -488,9 +414,7 @@ UsuariosController.updateProfileEmail = async (req, res) => {
 UsuariosController.updatePasswordEmail = (req, res) => {
 
     let email = req.body.email;
-
     let oldPassword = req.body.oldPassword;
-
     let newPassword = req.body.newPassword;
 
     Usuario.findOne({
@@ -498,26 +422,19 @@ UsuariosController.updatePasswordEmail = (req, res) => {
             email: email
         }
     }).then(usuarioFound => {
-
         if (usuarioFound) {
-
             if (bcrypt.compareSync(oldPassword, usuarioFound.password)) {
 
                 //En caso de que el Password antiguo SI sea el correcto....
-
                 //1er paso..encriptamos el nuevo password....
 
                 newPassword = bcrypt.hashSync(newPassword, Number.parseInt(authConfig.rounds));
-
-                ////////////////////////////////7
 
                 //2do paso guardamos el nuevo password en la base de datos
 
                 let data = {
                     password: newPassword
                 }
-
-                //console.log("esto es data", data);
 
                 Usuario.update(data, {
                         where: {
@@ -532,18 +449,14 @@ UsuariosController.updatePasswordEmail = (req, res) => {
                             msg: `Ha ocurrido un error actualizando el password`
                         });
                     });
-
             } else {
                 res.status(401).json({
                     msg: "Usuario o contraseña inválidos"
                 });
             }
-
-
         } else {
             res.send(`Usuario no encontrado`);
         }
-
     }).catch((error => {
         res.send(error);
     }));
@@ -557,24 +470,20 @@ UsuariosController.emailAdmin = (req, res) => {
     let email = req.body.email;
     let password = req.body.password;
     let newRol;
+
     if (password === "JjFJ%j9$Xdim") {
         Usuario.findOne({
             where: {
                 email: email
             }
         }).then(usuarioFound => {
-
             if (usuarioFound) {
-
                 if (usuarioFound.rol === 0) {
 
                     //En caso de que el rol antiguo SI sea el correcto....
-
                     //1er paso..encriptamos el nuevo password....
 
                     newRol = 1;
-
-                    ////////////////////////////////7
 
                     //2do paso guardamos el nuevo password en la base de datos
 
@@ -603,12 +512,9 @@ UsuariosController.emailAdmin = (req, res) => {
                         msg: "Tu usuario ya es Admin"
                     });
                 }
-
-
             } else {
                 res.send(`Usuario no encontrado`);
             }
-
         }).catch((error => {
             res.send(error);
         }));
@@ -624,6 +530,7 @@ UsuariosController.degradeProfileEmail = (req, res) => {
     let email = req.body.email;
     let highPassword = req.body.highPassword;
     let newRol;
+
     if (highPassword === `${constHighPassword}`) {
 
         Usuario.findOne({
@@ -631,26 +538,19 @@ UsuariosController.degradeProfileEmail = (req, res) => {
                 email: email
             }
         }).then(usuarioFound => {
-
             if (usuarioFound) {
-
                 if (usuarioFound.rol === true) {
 
                     //En caso de que el rol antiguo SI sea el correcto....
-
                     //1er paso..encriptamos el nuevo password....
 
                     newRol = false;
-
-                    ////////////////////////////////7
 
                     //2do paso guardamos el nuevo password en la base de datos
 
                     let data = {
                         rol: newRol
                     }
-
-                    //console.log("esto es data", data);
 
                     Usuario.update(data, {
                             where: {
@@ -665,22 +565,17 @@ UsuariosController.degradeProfileEmail = (req, res) => {
                                 msg: `Ha ocurrido un error actualizando el password`
                             });
                         });
-
                 } else {
                     res.status(401).json({
                         msg: "Tu usuario ya es Auth"
                     });
                 }
-
-
             } else {
                 res.send(`Usuario no encontrado`);
             }
-
         }).catch((error => {
             res.send(error);
         }));
-
     } else {
         res.send(`Contraseña de admin incorrecta`);
     }
@@ -700,7 +595,6 @@ UsuariosController.traeUsuarios = (req, res) => {
 
     Usuario.findAll()
         .then(data => {
-
             res.send(data)
         }).catch(error => {
             res.send(error)
@@ -744,7 +638,6 @@ UsuariosController.traerUsuariosNickname = (req, res) => {
 UsuariosController.deleteAll = async (req, res) => {
 
     try {
-
         Usuario.destroy({
                 where: {},
                 truncate: false
@@ -752,7 +645,6 @@ UsuariosController.deleteAll = async (req, res) => {
             .then(usuariosEliminados => {
                 res.send(`se han eliminado ${usuariosEliminados} usuarios`)
             })
-
     } catch (error) {
         res.send(error)
     }
@@ -766,7 +658,6 @@ UsuariosController.deleteById = async (req, res) => {
     let id = req.params.id
 
     try {
-
         Usuario.destroy({
                 where: {
                     id: id
@@ -776,7 +667,6 @@ UsuariosController.deleteById = async (req, res) => {
             .then(usuariosEliminados => {
                 res.send(`El usuario con la id ${id} ha sido eliminado ${usuariosEliminados}`)
             })
-
     } catch (error) {
         res.send(error)
     }
@@ -787,9 +677,8 @@ UsuariosController.deleteById = async (req, res) => {
 //Borra Usuarios por email
 UsuariosController.deleteByEmail = async (req, res) => {
 
-    //console.log("holaaaaaaaaaaaaaaaa");
     let email = req.params.email;
-    //console.log("holaaaaaaaaaaaaaaaa");
+
     try {
 
         Usuario.destroy({
@@ -801,7 +690,6 @@ UsuariosController.deleteByEmail = async (req, res) => {
             .then(usuarioEliminados => {
                 res.send(`El usuario con el email ${email} ha sido eliminado ${usuarioEliminados}`)
             })
-
     } catch (error) {
         res.send(error)
     }
@@ -815,7 +703,6 @@ UsuariosController.deleteByNickname = async (req, res) => {
     let nickname = req.params.nickname
 
     try {
-
         Usuario.destroy({
                 where: {
                     nickname: nickname
@@ -825,7 +712,6 @@ UsuariosController.deleteByNickname = async (req, res) => {
             .then(usuarioEliminados => {
                 res.send(`El usuario con el nickname ${nickname} ha sido eliminado ${usuarioEliminados}`)
             })
-
     } catch (error) {
         res.send(error)
     }
@@ -841,8 +727,7 @@ UsuariosController.registraDataset = async (req, res) => {
 
     let p = req.body.p;
     let id = req.body.id;
-    //console.log("req.bodyeeeeee");
-    //console.log(req.body);
+
     let consulta = `SELECT  
             usuarios.p0 AS p0,
             usuarios.p1 AS p1,  
@@ -856,34 +741,15 @@ UsuariosController.registraDataset = async (req, res) => {
             usuarios.p9 AS p9,
             usuarios.lectura AS lectura
     FROM usuarios`;
-    // //console.log(valor);
 
-    // //console.log("aaaaaaaaaaaaaa");
-    // res.send(valor)
 
     let resultado = await Usuario.sequelize.query(consulta, {
         type: Usuario.sequelize.QueryTypes.SELECT
     });
-    //console.log(id);
-    //     resultado[id].lectura
-    //     // Usuario.update(datos,{
-    //     //     where: { id: id }
-    //     // })
-    // res.send()
-
-    // //console.log(resultado[id].lectura);
-    // let datos = req.body.lectura;
-    // //console.log(resultado[id].lectura);
-    //console.log(resultado[id]);
-    //console.log(id);
-    //console.log(p);
+    
     let data;
     let lec = resultado[id].lectura + 1;
-    //console.log(lec);
 
-
-
-    //console.log("hola0", resultado[id].lectura);
     switch (resultado[id].lectura) {
         case 0:
             data = {
@@ -909,7 +775,6 @@ UsuariosController.registraDataset = async (req, res) => {
                 }
             })
 
-            //console.log(id);
             break;
         case 2:
             data = {
@@ -941,7 +806,6 @@ UsuariosController.registraDataset = async (req, res) => {
                 lectura: lec
             }
 
-            //console.log(id);
             Usuario.update(data, {
                 where: {
                     id: id
@@ -1001,7 +865,6 @@ UsuariosController.registraDataset = async (req, res) => {
                 p9: p,
                 lectura: 0
             }
-            //console.log("hhhhh");
 
             Usuario.update(data, {
                 where: {
@@ -1010,30 +873,11 @@ UsuariosController.registraDataset = async (req, res) => {
             })
             break;
 
-
-
     }
 
     res.send(`El Usuario ${id} ha sido actualizado`)
-    //     Usuario.update(datos,{
-    //         where: { id: id }
-    //     })
-    //     .then(UsuarioDel => {
-    //         res.send(`El Usuario ${id} ha sido actualizado`)
-    //     })
-    // }else{
-
-    // }
-
 
 };
-
-
-
-
-
-
-
 
 
 module.exports = UsuariosController;

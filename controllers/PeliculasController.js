@@ -23,8 +23,6 @@ const minMaxRoundedRandom = (min, max) => {
     return Math.round(Math.random() * (max - min) + min);
 }
 
-// https://api.themoviedb.org/3/discover/movie?api_key=210d6a5dd3f16419ce349c9f1b200d6d&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=5}&with_watch_monetization_types=flatrate
-
 //Film methods
 PeliculasController.clonarPeliculas = async () => {
     let TMDBimgUrlRoot = "https://image.tmdb.org/t/p/original";
@@ -35,10 +33,6 @@ PeliculasController.clonarPeliculas = async () => {
         let results1 = await axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=${key}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${minMaxRoundedRandom(1, 25)}&with_watch_monetization_types=flatrate`);
         let numbOfResultsPerPageTMDB = results1.data.results.length
         for (let i = 0; i < numbOfResultsPerPageTMDB; i++) {
-            // let gen="";
-            // for(res in results1.data.results[i].genre_ids){
-            //     gen+=res+",";
-            // }
             var res = results1.data.results[i].overview.substring(0, 2);
             Pelicula.create({
                 titulo: results1.data.results[i].original_title,
@@ -52,7 +46,6 @@ PeliculasController.clonarPeliculas = async () => {
             })
         }
     }
-
     return (`${25} páginas se han clonado con una cantidad de ${500} peliculas`)
 };
 
@@ -60,7 +53,6 @@ PeliculasController.clonarPeliculas = async () => {
 
 //Registro de Peliculas en la BD propia
 PeliculasController.registraPelicula = (req, res) => {
-
 
     let titulo = req.body.titulo;
     let genero = req.body.genero;
@@ -71,7 +63,6 @@ PeliculasController.registraPelicula = (req, res) => {
     let video = req.body.video;
     let fecha = req.body.fecha;
     let idioma = req.body.idioma;
-    // let visualizaciones = req.body.visualizaciones;
 
     Pelicula.findAll({
         where: {
@@ -82,18 +73,16 @@ PeliculasController.registraPelicula = (req, res) => {
             if (peliculaRepetida == 0) {
 
                 Pelicula.create({
-                        titulo: titulo,
-                        genero: genero,
-                        sinopsis: sinopsis,
-                        adult: adult,
-                        popularity: popularity,
-                        imagen: imagen,
-                        video: video,
-                        fecha: fecha,
-                        idioma: idioma
-                    }
-
-                ).then(pelicula => {
+                    titulo: titulo,
+                    genero: genero,
+                    sinopsis: sinopsis,
+                    adult: adult,
+                    popularity: popularity,
+                    imagen: imagen,
+                    video: video,
+                    fecha: fecha,
+                    idioma: idioma
+                }).then(pelicula => {
                     res.send(`${pelicula.titulo} ha sido registrada`)
                 }).catch((error) => {
                     res.send(error);
@@ -101,18 +90,13 @@ PeliculasController.registraPelicula = (req, res) => {
             } else {
                 res.send("La pelicula ya esta registrada")
             }
-        }else{
+        } else {
             res.send("No dejes ningun campo en blanco")
         }
-
     }).catch(error => {
         res.send(error)
     });
-
-
-
 };
-
 
 
 
@@ -123,7 +107,6 @@ PeliculasController.actualizarPelicula = (req, res) => {
     //console.log("hola", id);
     let datos = req.body;
     try {
-
         Pelicula.update(datos, {
                 where: {
                     id: id
@@ -132,7 +115,6 @@ PeliculasController.actualizarPelicula = (req, res) => {
             .then(peliculaDel => {
                 res.send(`La pelicula ${id} ha sido actualizada`)
             })
-
     } catch (error) {
         res.send(error)
     }
@@ -143,8 +125,7 @@ PeliculasController.actualizarPelicula = (req, res) => {
 
 //Leer todos las Peliculas de nuestra propia DB
 PeliculasController.traePeliculas = (req, res) => {
-    // console.log("99999999999");
-    // console.log(req);
+
 
     Pelicula.findAll()
         .then(data => {
@@ -161,12 +142,7 @@ PeliculasController.traePeliculas = (req, res) => {
 //Busca peliculas por Genero En propia BD
 PeliculasController.peliculasGenero = (req, res) => {
 
-    //console.log("hhhhhhhhhhhh1234")
-    //console.log(req)
     let genero = req.body.genero;
-
-    //console.log("hhhhhhhhhhhh")
-    //console.log(genero)
 
     Pelicula.findAll({
         where: {
@@ -416,7 +392,7 @@ PeliculasController.peliculasTitulo = async (req, res) => {
         let resultado = await axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${key}&language=en-US&query=${busqueda}&page=1&include_adult=false`)
         res.send(resultado.data)
     } catch (error) {
-        //console.log("El error es: ", error.response.status, error.response.statusText)
+        console.log("El error es: ", error.response.status, error.response.statusText)
     }
 }
 
@@ -428,7 +404,7 @@ PeliculasController.traeNovedades = async (req, res) => {
         let resultado = await axios.get(`https://api.themoviedb.org/3/movie/upcoming?api_key=${key}&language=en-US&page=1`)
         res.send(resultado.data);
     } catch (error) {
-        //console.log("El error es: ", error.response.status, error.response.statusText)
+        res.send("El error es: ", error.response.status, error.response.statusText)
     }
 }
 
@@ -441,7 +417,7 @@ PeliculasController.peliculasValoradas = async (req, res) => {
         let result = await axios.get(`https://api.themoviedb.org/3/movie/top_rated?api_key=${key}&language=en-US&page=1`)
         res.send(result.data);
     } catch (error) {
-        //console.log("El error es: ", error.response.status, error.response.statusText)
+        res.send("El error es: ", error.response.status, error.response.statusText)
     }
 }
 
@@ -455,7 +431,7 @@ PeliculasController.peliculasUltimas = async (req, res) => {
         let resultado = await axios.get(`https://api.themoviedb.org/3/movie/latest?api_key=${key}&language=en-US`)
         res.send(resultado.data)
     } catch (error) {
-        //console.log("El error es: ", error.response.status, error.response.statusText)
+        res.send("El error es: ", error.response.status, error.response.statusText)
     }
 }
 
@@ -471,7 +447,7 @@ PeliculasController.peliculasRelacionadas = async (req, res) => {
         let resultado = await axios.get(`https://api.themoviedb.org/3/movie/${id}/similar?api_key=${key}&language=en-US&page=1`)
         res.send(resultado.data)
     } catch (error) {
-        //console.log("El error es: ", error.response.status, error.response.statusText)
+        res.send("El error es: ", error.response.status, error.response.statusText)
     }
 }
 
@@ -486,7 +462,7 @@ PeliculasController.peliculasIdReviews = async (req, res) => {
         res.send(resultado.data)
 
     } catch (error) {
-        //console.log("El error es: ", error.response.status, error.response.statusText)
+        res.send("El error es: ", error.response.status, error.response.statusText)
     }
 }
 
@@ -500,7 +476,7 @@ PeliculasController.peliculasPorId = async (req, res) => {
         res.send(resultado.data)
 
     } catch (error) {
-        //console.log("El error es: ", error.response.status, error.response.statusText)
+        res.send("El error es: ", error.response.status, error.response.statusText)
     }
 }
 
@@ -510,13 +486,6 @@ PeliculasController.peliculasPorId = async (req, res) => {
 //Registro de Peliculas en la BD propia
 PeliculasController.avActualizaPelicula = async (req, res) => {
 
-    // let angry = req.body.angry;
-    // let disgusted = req.body.disgusted;
-    // let fearful = req.body.fearful;
-    // let happy = req.body.happy;
-    // let neutral = req.body.neutral;
-    // let sad = req.body.sad;
-    // let surprised = req.body.surprised;
     let angry = req.body.angry;
     let disgusted = req.body.disgusted;
     let fearful = req.body.fearful;
@@ -525,7 +494,6 @@ PeliculasController.avActualizaPelicula = async (req, res) => {
     let sad = req.body.sad;
     let surprised = req.body.surprised;
     let id = req.body.id
-
 
     let consulta = `SELECT 
                             peliculas.visualizaciones AS visualizaciones,
@@ -543,10 +511,6 @@ PeliculasController.avActualizaPelicula = async (req, res) => {
         type: Pelicula.sequelize.QueryTypes.SELECT
     });
 
-
-    //console.log(resultado)
-
-
     if (
         resultado[0].angry === 0 &&
         resultado[0].fearful === 0 &&
@@ -555,7 +519,6 @@ PeliculasController.avActualizaPelicula = async (req, res) => {
         resultado[0].neutral === 0 &&
         resultado[0].sad === 0 &&
         resultado[0].surprised === 0) {
-
         resultado[0].angry = angry;
         resultado[0].fearful = fearful;
         resultado[0].disgusted = disgusted;
@@ -573,9 +536,7 @@ PeliculasController.avActualizaPelicula = async (req, res) => {
         let neutral2 = resultado[0].visualizaciones * resultado[0].neutral;
         let sad2 = resultado[0].visualizaciones * resultado[0].sad;
         let surprised2 = resultado[0].visualizaciones * resultado[0].surprised;
-        //console.log("aaaaaaaaaaaaaaaaaaaaa")
-        //console.log(sad)
-        //console.log("aaaaaaaaaaaaaaaaaaaaa")
+
 
         angry = angry + angry2;
         fearful = fearful + fearful2;
@@ -601,7 +562,6 @@ PeliculasController.avActualizaPelicula = async (req, res) => {
 
     }
 
-    // res.send(resultado) 
     try {
 
         Pelicula.update(resultado[0], {
@@ -610,36 +570,18 @@ PeliculasController.avActualizaPelicula = async (req, res) => {
                 }
             })
             .then(() => {
-                res.send(`La pelicula ${id} ha sido actualizada con `
-                +"angry"+resultado[0].angry
-                +"fearful"+resultado[0].fearful
-                +"disgusted"+resultado[0].disgusted
-                +"happy"+resultado[0].happy
-                +"neutral"+resultado[0].neutral
-                +"sad"+resultado[0].sad
-                +"surprised"+resultado[0].surprised)
+                res.send(`La pelicula ${id} ha sido actualizada con ` +
+                    "angry" + resultado[0].angry +
+                    "fearful" + resultado[0].fearful +
+                    "disgusted" + resultado[0].disgusted +
+                    "happy" + resultado[0].happy +
+                    "neutral" + resultado[0].neutral +
+                    "sad" + resultado[0].sad +
+                    "surprised" + resultado[0].surprised)
             })
-
     } catch (error) {
         res.send(error)
     }
-
-
-    // //console.log(resultado)
-    // res.send(resultado)
-    // let datos = req.body;
-    // try {
-
-    //     Pelicula.update(datos,{
-    //         where: { id: id }
-    //     })
-    //         .then(peliculaDel => {
-    //             res.send(`La emocion ${id} ha sido actualizada`)
-    //         })
-
-    // } catch (error) {
-    //     res.send(error)
-    // }
 
 };
 
@@ -666,18 +608,11 @@ PeliculasController.traerPeliculasAI = async (req, res) => {
     FROM usuarios
     WHERE 
     id LIKE ${id}`;
-    // //console.log(valor);
 
-    // //console.log("aaaaaaaaaaaaaa");
-    // res.send(valor)
 
     let resultado = await Pelicula.sequelize.query(consulta, {
         type: Pelicula.sequelize.QueryTypes.SELECT
     });
-
-    //console.log("iiiiiiiiii")
-    //console.log(resultado[0])
-
 
     let consulta20 = `SELECT 
                             peliculas.id AS id, 
@@ -709,15 +644,14 @@ PeliculasController.traerPeliculasAI = async (req, res) => {
     peliculas.surprised AS surprised,
     peliculas.imagen AS imagen,
     peliculas.video AS video
-FROM peliculas
-WHERE 
-id LIKE '${resultado[0].p1}'
-`;
+    FROM peliculas
+    WHERE 
+    id LIKE '${resultado[0].p1}'
+    `;
+
     let resultado21 = await Pelicula.sequelize.query(consulta21, {
         type: Pelicula.sequelize.QueryTypes.SELECT
     });
-    //console.log("iiiiiiiiii")
-    //console.log(resultado21)
 
     let consulta22 = `SELECT 
     peliculas.id AS id, 
@@ -730,29 +664,29 @@ id LIKE '${resultado[0].p1}'
     peliculas.surprised AS surprised,
     peliculas.imagen AS imagen,
     peliculas.video AS video
-FROM peliculas
-WHERE 
-id LIKE '${resultado[0].p2}'
-`;
+    FROM peliculas
+    WHERE 
+    id LIKE '${resultado[0].p2}'
+    `;
     let resultado22 = await Pelicula.sequelize.query(consulta22, {
         type: Pelicula.sequelize.QueryTypes.SELECT
     });
 
     let consulta23 = `SELECT 
-peliculas.id AS id, 
-peliculas.angry AS angry,
-peliculas.disgusted AS disgusted,
-peliculas.fearful AS fearful,
-peliculas.happy AS happy,
-peliculas.neutral AS neutral,
-peliculas.sad AS sad,
-peliculas.surprised AS surprised,
-peliculas.imagen AS imagen,
-peliculas.video AS video
-FROM peliculas
-WHERE 
-id LIKE '${resultado[0].p3}'
-`;
+    peliculas.id AS id, 
+    peliculas.angry AS angry,
+    peliculas.disgusted AS disgusted,
+    peliculas.fearful AS fearful,
+    peliculas.happy AS happy,
+    peliculas.neutral AS neutral,
+    peliculas.sad AS sad,
+    peliculas.surprised AS surprised,
+    peliculas.imagen AS imagen,
+    peliculas.video AS video
+    FROM peliculas
+    WHERE 
+    id LIKE '${resultado[0].p3}'
+    `;
     let resultado23 = await Pelicula.sequelize.query(consulta23, {
         type: Pelicula.sequelize.QueryTypes.SELECT
     });
@@ -890,9 +824,6 @@ id LIKE '${resultado[0].p9}'
     let resultado3 = await Pelicula.sequelize.query(consulta3, {
         type: Pelicula.sequelize.QueryTypes.SELECT
     });
-
-    //console.log("44444" + resultado3)
-    //console.log(resultado3)
 
     let resultadoIa = ""
     let recomendado = ""
@@ -1182,15 +1113,13 @@ id LIKE '${resultado[0].p9}'
                     "no recomendado": 1
                 }
             }
-
         ]
 
-        
+
 
         redNeuronal.train(datos);
         for (let element of resultado3) {
-            // //console.log("resultaaa3333" + element)
-            // //console.log(element)  
+
             recomendado = brain.likely({
                 "angry": element.angry,
                 "disgusted": element.disgusted,
@@ -1200,55 +1129,27 @@ id LIKE '${resultado[0].p9}'
                 "sad": element.sad,
                 "surprised": element.surprised
             }, redNeuronal)
-            // //console.log("resultaaa" + recomendado)
-            // //console.log("resultaaa3333" + element)
+
             if (recomendado === "recomendado") {
 
-                // //console.log("resultaaa3333" + element[0])
-                resultadoIa = '"sinopsis":"' + element.sinopsis + '","video":"' + element.video +'","titulo":"' + element.titulo +  '","id":' + element.id + ',"imagen":"' + element.imagen + '"';
-                //console.log("resultadoIa" + resultadoIa + "tttt")
+                resultadoIa = '"sinopsis":"' + element.sinopsis + '","video":"' + element.video + '","titulo":"' + element.titulo + '","id":' + element.id + ',"imagen":"' + element.imagen + '"';
                 resultadoIa = JSON.parse('{' + resultadoIa + '}');
                 obj[i] = resultadoIa
-                // //console.log(obj[0])
                 i++
-                //console.log(obj)
             }
         }
-        // "name":"John", "age":30, "city":"New York"
-        // //console.log(resultadoIa)
-        // resultadoIa=resultadoIa.slice(0, -1); 
-        // //console.log(resultadoIa)
-        // obj = JSON.parse('{'+resultadoIa+'}');
+
     }
     iniciar();
-    // //console.log(resultado3)
-    //console.log("6666666666" + obj);
+
     res.send(obj);
 
 
 
 }
-// let datos = req.body;
-// try {
-
-//     Usuario.update(datos,{
-//         where: { id: id }
-//     })
-//         .then(UsuarioDel => {
-//             res.send(`El Usuario ${id} ha sido actualizado`)
-//         })
-
-// } catch (error) {
-//     res.send(error)
-// }
-
-
-
 
 //TRAE peliculas recomendadas por AV a traves de AI
 PeliculasController.traerPeliculasAVAI = async (req, res) => {
-
-
 
     let angry = req.body.angry;
     let disgusted = req.body.disgusted;
@@ -1257,15 +1158,7 @@ PeliculasController.traerPeliculasAVAI = async (req, res) => {
     let neutral = req.body.neutral;
     let sad = req.body.sad;
     let surprised = req.body.surprised;
-    // let id = req.body.id
 
-
-
-
-    // //console.log(resultado2[0].angry)
-    // //console.log(resultado2[0].angry)
-    // brain=ml
-    // //console.log(brain)
 
     let consulta3 = `SELECT  
     peliculas.angry AS angry,
@@ -1280,7 +1173,6 @@ PeliculasController.traerPeliculasAVAI = async (req, res) => {
     peliculas.id AS id,
     peliculas.titulo AS titulo,
     peliculas.sinopsis AS sinopsis
-    
     FROM peliculas                 
     `;
 
@@ -1312,13 +1204,13 @@ PeliculasController.traerPeliculasAVAI = async (req, res) => {
             },
             {
                 "input": {
-                    "angry": angry-0.05,
-                    "disgusted": disgusted-0.05,
-                    "fearful": fearful-0.05,
-                    "happy": happy-0.05,
-                    "neutral": neutral-0.05,
-                    "sad": sad-0.05,
-                    "surprised": surprised-0.05
+                    "angry": angry - 0.05,
+                    "disgusted": disgusted - 0.05,
+                    "fearful": fearful - 0.05,
+                    "happy": happy - 0.05,
+                    "neutral": neutral - 0.05,
+                    "sad": sad - 0.05,
+                    "surprised": surprised - 0.05
                 },
                 "output": {
                     "recomendado": 1
@@ -1326,13 +1218,13 @@ PeliculasController.traerPeliculasAVAI = async (req, res) => {
             },
             {
                 "input": {
-                    "angry": angry-0.03,
-                    "disgusted": disgusted-0.03,
-                    "fearful": fearful-0.03,
-                    "happy": happy-0.03,
-                    "neutral": neutral-0.03,
-                    "sad": sad-0.03,
-                    "surprised": surprised-0.03
+                    "angry": angry - 0.03,
+                    "disgusted": disgusted - 0.03,
+                    "fearful": fearful - 0.03,
+                    "happy": happy - 0.03,
+                    "neutral": neutral - 0.03,
+                    "sad": sad - 0.03,
+                    "surprised": surprised - 0.03
                 },
                 "output": {
                     "recomendado": 1
@@ -1340,13 +1232,13 @@ PeliculasController.traerPeliculasAVAI = async (req, res) => {
             },
             {
                 "input": {
-                    "angry": angry-0.04,
-                    "disgusted": disgusted-0.04,
-                    "fearful": fearful-0.04,
-                    "happy": happy-0.04,
-                    "neutral": neutral-0.04,
-                    "sad": sad-0.04,
-                    "surprised": surprised-0.04
+                    "angry": angry - 0.04,
+                    "disgusted": disgusted - 0.04,
+                    "fearful": fearful - 0.04,
+                    "happy": happy - 0.04,
+                    "neutral": neutral - 0.04,
+                    "sad": sad - 0.04,
+                    "surprised": surprised - 0.04
                 },
                 "output": {
                     "recomendado": 1
@@ -1354,13 +1246,13 @@ PeliculasController.traerPeliculasAVAI = async (req, res) => {
             },
             {
                 "input": {
-                    "angry": angry+0.05,
-                    "disgusted": disgusted+0.05,
-                    "fearful": fearful+0.05,
-                    "happy": happy+0.05,
-                    "neutral": neutral+0.05,
-                    "sad": sad+0.05,
-                    "surprised": surprised+0.05
+                    "angry": angry + 0.05,
+                    "disgusted": disgusted + 0.05,
+                    "fearful": fearful + 0.05,
+                    "happy": happy + 0.05,
+                    "neutral": neutral + 0.05,
+                    "sad": sad + 0.05,
+                    "surprised": surprised + 0.05
                 },
                 "output": {
                     "recomendado": 1
@@ -1368,13 +1260,13 @@ PeliculasController.traerPeliculasAVAI = async (req, res) => {
             },
             {
                 "input": {
-                    "angry": angry+0.03,
-                    "disgusted": disgusted+0.03,
-                    "fearful": fearful+0.03,
-                    "happy": happy+0.03,
-                    "neutral": neutral+0.03,
-                    "sad": sad+0.03,
-                    "surprised": surprised+0.03
+                    "angry": angry + 0.03,
+                    "disgusted": disgusted + 0.03,
+                    "fearful": fearful + 0.03,
+                    "happy": happy + 0.03,
+                    "neutral": neutral + 0.03,
+                    "sad": sad + 0.03,
+                    "surprised": surprised + 0.03
                 },
                 "output": {
                     "recomendado": 1
@@ -1382,13 +1274,13 @@ PeliculasController.traerPeliculasAVAI = async (req, res) => {
             },
             {
                 "input": {
-                    "angry": angry+0.04,
-                    "disgusted": disgusted+0.04,
-                    "fearful": fearful+0.04,
-                    "happy": happy+0.04,
-                    "neutral": neutral+0.04,
-                    "sad": sad+0.04,
-                    "surprised": surprised+0.04
+                    "angry": angry + 0.04,
+                    "disgusted": disgusted + 0.04,
+                    "fearful": fearful + 0.04,
+                    "happy": happy + 0.04,
+                    "neutral": neutral + 0.04,
+                    "sad": sad + 0.04,
+                    "surprised": surprised + 0.04
                 },
                 "output": {
                     "recomendado": 1
@@ -1411,13 +1303,13 @@ PeliculasController.traerPeliculasAVAI = async (req, res) => {
             },
             {
                 "input": {
-                    "angry": 1 -  angry-0.05,
-                    "disgusted": 1 -  disgusted-0.05,
-                    "fearful": 1 -  fearful-0.05,
-                    "happy": 1 -  happy-0.05,
-                    "neutral": 1 -  neutral-0.05,
-                    "sad": 1 -  sad-0.05,
-                    "surprised": 1 -  surprised-0.05
+                    "angry": 1 - angry - 0.05,
+                    "disgusted": 1 - disgusted - 0.05,
+                    "fearful": 1 - fearful - 0.05,
+                    "happy": 1 - happy - 0.05,
+                    "neutral": 1 - neutral - 0.05,
+                    "sad": 1 - sad - 0.05,
+                    "surprised": 1 - surprised - 0.05
                 },
                 "output": {
                     "no recomendado": 1
@@ -1425,13 +1317,13 @@ PeliculasController.traerPeliculasAVAI = async (req, res) => {
             },
             {
                 "input": {
-                    "angry": 1 -  angry-0.03,
-                    "disgusted": 1 -  disgusted-0.03,
-                    "fearful": 1 -  fearful-0.03,
-                    "happy": 1 -  happy-0.03,
-                    "neutral": 1 -  neutral-0.03,
-                    "sad": 1 -  sad-0.03,
-                    "surprised": 1 -  surprised-0.03
+                    "angry": 1 - angry - 0.03,
+                    "disgusted": 1 - disgusted - 0.03,
+                    "fearful": 1 - fearful - 0.03,
+                    "happy": 1 - happy - 0.03,
+                    "neutral": 1 - neutral - 0.03,
+                    "sad": 1 - sad - 0.03,
+                    "surprised": 1 - surprised - 0.03
                 },
                 "output": {
                     "no recomendado": 1
@@ -1439,13 +1331,13 @@ PeliculasController.traerPeliculasAVAI = async (req, res) => {
             },
             {
                 "input": {
-                    "angry": 1 -  angry-0.04,
-                    "disgusted": 1 -  disgusted-0.04,
-                    "fearful": 1 -  fearful-0.04,
-                    "happy": 1 -  happy-0.04,
-                    "neutral": 1 -  neutral-0.04,
-                    "sad": 1 -  sad-0.04,
-                    "surprised": 1 -  surprised-0.04
+                    "angry": 1 - angry - 0.04,
+                    "disgusted": 1 - disgusted - 0.04,
+                    "fearful": 1 - fearful - 0.04,
+                    "happy": 1 - happy - 0.04,
+                    "neutral": 1 - neutral - 0.04,
+                    "sad": 1 - sad - 0.04,
+                    "surprised": 1 - surprised - 0.04
                 },
                 "output": {
                     "no recomendado": 1
@@ -1453,13 +1345,13 @@ PeliculasController.traerPeliculasAVAI = async (req, res) => {
             },
             {
                 "input": {
-                    "angry": 1 -  angry+0.05,
-                    "disgusted": 1 -  disgusted+0.05,
-                    "fearful": 1 -  fearful+0.05,
-                    "happy": 1 -  happy+0.05,
-                    "neutral": 1 -  neutral+0.05,
-                    "sad": 1 -  sad+0.05,
-                    "surprised": 1 -  surprised+0.05
+                    "angry": 1 - angry + 0.05,
+                    "disgusted": 1 - disgusted + 0.05,
+                    "fearful": 1 - fearful + 0.05,
+                    "happy": 1 - happy + 0.05,
+                    "neutral": 1 - neutral + 0.05,
+                    "sad": 1 - sad + 0.05,
+                    "surprised": 1 - surprised + 0.05
                 },
                 "output": {
                     "no recomendado": 1
@@ -1467,13 +1359,13 @@ PeliculasController.traerPeliculasAVAI = async (req, res) => {
             },
             {
                 "input": {
-                    "angry": 1 -  angry+0.03,
-                    "disgusted": 1 -  disgusted+0.03,
-                    "fearful": 1 -  fearful+0.03,
-                    "happy": 1 -  happy+0.03,
-                    "neutral": 1 -  neutral+0.03,
-                    "sad": 1 -  sad+0.03,
-                    "surprised": 1 -  surprised+0.03
+                    "angry": 1 - angry + 0.03,
+                    "disgusted": 1 - disgusted + 0.03,
+                    "fearful": 1 - fearful + 0.03,
+                    "happy": 1 - happy + 0.03,
+                    "neutral": 1 - neutral + 0.03,
+                    "sad": 1 - sad + 0.03,
+                    "surprised": 1 - surprised + 0.03
                 },
                 "output": {
                     "no recomendado": 1
@@ -1481,13 +1373,13 @@ PeliculasController.traerPeliculasAVAI = async (req, res) => {
             },
             {
                 "input": {
-                    "angry": 1 -  angry+0.04,
-                    "disgusted": 1 -  disgusted+0.04,
-                    "fearful": 1 -  fearful+0.04,
-                    "happy": 1 -  happy+0.04,
-                    "neutral": 1 -  neutral+0.04,
-                    "sad": 1 -  sad+0.04,
-                    "surprised": 1 -  surprised+0.04
+                    "angry": 1 - angry + 0.04,
+                    "disgusted": 1 - disgusted + 0.04,
+                    "fearful": 1 - fearful + 0.04,
+                    "happy": 1 - happy + 0.04,
+                    "neutral": 1 - neutral + 0.04,
+                    "sad": 1 - sad + 0.04,
+                    "surprised": 1 - surprised + 0.04
                 },
                 "output": {
                     "no recomendado": 1
@@ -1499,7 +1391,6 @@ PeliculasController.traerPeliculasAVAI = async (req, res) => {
 
         redNeuronal.train(datos);
         for (let element of resultado3) {
-            // //console.log(element)  
             recomendado = brain.likely({
                 "angry": element.angry,
                 "disgusted": element.disgusted,
@@ -1509,47 +1400,19 @@ PeliculasController.traerPeliculasAVAI = async (req, res) => {
                 "sad": element.sad,
                 "surprised": element.surprised
             }, redNeuronal)
-            // //console.log("resultaaa" + recomendado)
-            // //console.log("resultaaa" + element.disgusted)
+
             if (recomendado === "recomendado") {
 
-
-                resultadoIa = '"titulo":"' + element.titulo + '","sinopsis":"' + element.sinopsis+ '","id":' + element.id + ',"imagen":"' + element.imagen+ '","video":"' + element.video + '"'
-                //console.log("resultadoIa" + resultadoIa + "tttt")
+                resultadoIa = '"titulo":"' + element.titulo + '","sinopsis":"' + element.sinopsis + '","id":' + element.id + ',"imagen":"' + element.imagen + '","video":"' + element.video + '"'
                 resultadoIa = JSON.parse('{' + resultadoIa + '}');
                 obj[i] = resultadoIa
-                // //console.log(obj[0])
                 i++
-                //console.log(obj)
             }
         }
-
     }
     iniciar();
-    // //console.log(resultado3)
-    //console.log("eeee" + obj)
+
     res.send(obj)
-
-
-
-
-    // let datos = req.body;
-    // try {
-
-    //     Usuario.update(datos,{
-    //         where: { id: id }
-    //     })
-    //         .then(UsuarioDel => {
-    //             res.send(`El Usuario ${id} ha sido actualizado`)
-    //         })
-
-    // } catch (error) {
-    //     res.send(error)
-    // }
-
-
-
-
 
 
 }
