@@ -2,10 +2,7 @@ const jwt = require('jsonwebtoken');
 const authConfig = require('../config/auth');
 
 module.exports = (req, res, next) => {
-    console.log("888888888");
-    console.log(req);
-    console.log("888888888");
-    console.log(req.headers);
+
 
     // Comprobar que existe el token
     if (!req.headers.authorization) {
@@ -16,8 +13,6 @@ module.exports = (req, res, next) => {
 
         // Comrpobar la validez de este token
         let token = req.headers.authorization.split(" ")[1];
-        console.log("888888888");
-        console.log(token)
 
         // Comprobar la validez de este token
         jwt.verify(token, authConfig.secret, (err, decoded) => {
