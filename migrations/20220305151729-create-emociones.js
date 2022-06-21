@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up (queryInterface, Sequelize) {
     await queryInterface.createTable('emociones', {
       id: {
         allowNull: false,
@@ -52,10 +52,10 @@ module.exports = {
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
-      },
-    });
+      }
+    })
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('emociones');
+  async down (queryInterface, Sequelize) {
+    await queryInterface.dropTable('emociones')
   }
-};
+}

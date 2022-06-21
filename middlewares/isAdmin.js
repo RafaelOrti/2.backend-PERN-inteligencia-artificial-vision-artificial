@@ -1,42 +1,34 @@
-//esta forma es la correcta
-const jwt = require('jsonwebtoken');
-const authConfig = require('../config/auth');
-//hacerlo así
+// esta forma es la correcta
+const jwt = require('jsonwebtoken')
+const authConfig = require('../config/auth')
+// hacerlo así
 module.exports = (req, res, next) => {
-    let token = req.headers.authorization.split(' ')[1];
+  const token = req.headers.authorization.split(' ')[1]
 
-    //esto es el token
+  // esto es el token
 
-    let {usuario} = jwt.decode(token,authConfig.secret)
-    //entre corchetes coges la llave, primero tienes llave y despues el valor de la llave solo coges esta, pero la variable se guarda en user
+  const { usuario } = jwt.decode(token, authConfig.secret)
+  // entre corchetes coges la llave, primero tienes llave y despues el valor de la llave solo coges esta, pero la variable se guarda en user
 
-    try{
-        if(usuario.rol){
-            next();
-        }else{
-            res.status(403).send({msg:`User is not allowed.`})
-        }
-    }catch(error){
-        console.log(error);
-        res.status(400).json({
-            msg:`Something had happened, try to check thue infos you put and try again.`,
-                error:error
-        });
+  try {
+    if (usuario.rol) {
+      next()
+    } else {
+      res.status(403).send({ msg: 'User is not allowed.' })
     }
-    console.log(usuario);
-    
-};
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({
+      msg: 'Something had happened, try to check thue infos you put and try again.',
+      error
+    })
+  }
+  console.log(usuario)
+}
 
+// esta forma mal
 
-
-
-
-
-
-
-//esta forma mal
-
-// const { Usuario } = require('../models/index'); 
+// const { Usuario } = require('../models/index');
 
 // module.exports = (req, res, next) => {
 

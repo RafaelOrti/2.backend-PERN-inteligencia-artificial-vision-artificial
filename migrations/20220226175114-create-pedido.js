@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up (queryInterface, Sequelize) {
     await queryInterface.createTable('Pedidos', {
       id: {
         allowNull: false,
@@ -32,7 +32,7 @@ module.exports = {
         onDelete: 'CASCADE'
       },
       fechaEntrega: {
-        allowNull: false,type: Sequelize.DATE
+        allowNull: false, type: Sequelize.DATE
       },
       createdAt: {
         allowNull: false,
@@ -42,9 +42,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
+    })
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Pedidos');
+  async down (queryInterface, Sequelize) {
+    await queryInterface.dropTable('Pedidos')
   }
-};
+}

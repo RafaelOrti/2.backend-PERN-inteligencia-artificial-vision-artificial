@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up (queryInterface, Sequelize) {
     await queryInterface.createTable('Peliculas', {
       id: {
         allowNull: false,
@@ -26,7 +26,7 @@ module.exports = {
       imagen: {
         type: Sequelize.STRING
       },
-      video:{
+      video: {
         type: Sequelize.STRING
       },
       fecha: {
@@ -93,9 +93,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
+    })
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Peliculas');
+  async down (queryInterface, Sequelize) {
+    await queryInterface.dropTable('Peliculas')
   }
-};
+}

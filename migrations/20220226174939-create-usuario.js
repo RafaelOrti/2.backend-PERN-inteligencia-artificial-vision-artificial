@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up (queryInterface, Sequelize) {
     await queryInterface.createTable('Usuarios', {
       id: {
         allowNull: false,
@@ -65,7 +65,7 @@ module.exports = {
       },
       nombre: {
         type: Sequelize.STRING,
-        //Este valor puede ser nulo
+        // Este valor puede ser nulo
         allowNull: false
       },
       apellido: {
@@ -78,8 +78,7 @@ module.exports = {
         unique: true
       },
       edad: {
-        type: Sequelize.INTEGER
-        ,
+        type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0
       },
@@ -90,13 +89,13 @@ module.exports = {
       },
       rol: {
         type: Sequelize.BOOLEAN,
-        //este método se usa para dar un valor por defecto
+        // este método se usa para dar un valor por defecto
         defaultValue: false
       },
       password: {
         type: Sequelize.STRING,
         allowNull: false
-      },  
+      },
       puntos: {
         type: Sequelize.INTEGER,
         defaultValue: 0,
@@ -110,9 +109,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
+    })
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Usuarios');
+  async down (queryInterface, Sequelize) {
+    await queryInterface.dropTable('Usuarios')
   }
-};
+}
