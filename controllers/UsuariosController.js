@@ -446,8 +446,6 @@ UsuariosController.emailAdmin = (req, res) => {
             rol: newRol
           }
 
-          // console.log("esto es data", data);
-
           Usuario.update(data, {
             where: {
               email

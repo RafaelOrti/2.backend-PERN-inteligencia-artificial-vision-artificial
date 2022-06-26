@@ -17,13 +17,11 @@ module.exports = (req, res, next) => {
       res.status(403).send({ msg: 'User is not allowed.' })
     }
   } catch (error) {
-    console.log(error)
     res.status(400).json({
       msg: 'Something had happened, try to check thue infos you put and try again.',
       error
     })
   }
-  console.log(usuario)
 }
 
 // esta forma mal

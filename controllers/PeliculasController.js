@@ -92,7 +92,6 @@ PeliculasController.registraPelicula = (req, res) => {
 // ACTUALIZAR Pelicula DB propia
 PeliculasController.actualizarPelicula = (req, res) => {
   const id = req.body.id
-  // console.log("hola", id);
   const datos = req.body
   try {
     Pelicula.update(datos, {
@@ -322,7 +321,7 @@ PeliculasController.peliculasTitulo = async (req, res) => {
     const resultado = await axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${key}&language=en-US&query=${busqueda}&page=1&include_adult=false`)
     res.send(resultado.data)
   } catch (error) {
-    console.log('El error es: ', error.response.status, error.response.statusText)
+    res.send('El error es: ', error.response.status, error.response.statusText)
   }
 }
 

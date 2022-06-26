@@ -47,6 +47,7 @@ router.put('/actualizar/perfilId/:id', UsuariosController.updateProfileId)
 // http://localhost:3000/Usuarios/actualizar/email/:id
 
 /// /////////////id//////////////
+
 /// /////////////email//////////////
 
 // Actualizar contraseña de Usuario por email
