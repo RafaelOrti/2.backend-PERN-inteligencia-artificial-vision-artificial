@@ -526,7 +526,8 @@ PeliculasController.traerPeliculasAI = async (req, res) => {
   const resultado20 = await Pelicula.sequelize.query(consulta20, {
     type: Pelicula.sequelize.QueryTypes.SELECT
   })
-
+  // console.log('3333', resultado20, '4444')
+  // console.log('3333', resultado[0], '4444')
   const consulta21 = `SELECT 
     peliculas.id AS id, 
     peliculas.angry AS angry,

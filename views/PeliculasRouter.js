@@ -45,7 +45,7 @@ router.post('/avias', PeliculasController.traerPeliculasAVAI)
 /// /////////////////////LEER PELICULA //////////////////////
 
 // Leer todas las peliculas
-router.get('/er', PeliculasController.traePeliculas)
+router.get('/', PeliculasController.traePeliculas)
 // http://localhost:3000/peliculas
 
 // Lee Usuario por id

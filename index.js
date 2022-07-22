@@ -14,7 +14,7 @@ const corsOptions = { // CONFIGURO OPCIONES DE CORS PARA PERMITIR QUE ACCIONES D
   preflightContinue: false,
   optionsSuccessStatus: 204
 }
-
+// app.use(cors())
 app.use(express.json()) // PUEDO OBTENER JSON DEL BODY
 app.use(cors(corsOptions)) // USO CORS
 // Middleware

@@ -51,7 +51,12 @@ UsuariosController.registraUsuario = async (req, res) => {
 
     }
   }).then(datosRepetidos => {
-    if (datosRepetidos === 0) {
+    // console.log('wewe', datosRepetidos, 'ewe')
+    // console.log(typeof datosRepetidos)
+
+    if (datosRepetidos.length > 0) {
+      res.send('El usuario con ese e-mail o nickname ya existe en nuestra base de datos')
+    } else {
       Usuario.create({
         nombre,
         apellido,
@@ -65,8 +70,6 @@ UsuariosController.registraUsuario = async (req, res) => {
       }).catch((error) => {
         res.send(error)
       })
-    } else {
-      res.send('El usuario con ese e-mail o nickname ya existe en nuestra base de datos')
     }
   }).catch(error => {
     res.send(error)
@@ -655,7 +658,8 @@ UsuariosController.deleteByNickname = async (req, res) => {
 UsuariosController.registraDataset = async (req, res) => {
   const p = req.body.p
   const id = req.body.id
-
+  // console.log(p)
+  // console.log(id)
   const consulta = `SELECT  
             usuarios.p0 AS p0,
             usuarios.p1 AS p1,  
@@ -675,6 +679,7 @@ UsuariosController.registraDataset = async (req, res) => {
   })
 
   let data
+  // console.log("7777", resultado)
   const lec = resultado[id].lectura + 1
 
   switch (resultado[id].lectura) {
