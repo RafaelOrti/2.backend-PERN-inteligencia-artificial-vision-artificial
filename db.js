@@ -5,6 +5,9 @@ const sequelize = new Sequelize(
   process.env.MYSQL_DATABASE || config.development.database, // nombre db
   process.env.MYSQL_USER || config.development.username, // nombre superusuario
   process.env.MYSQL_PASSWORD || config.development.password, // nombre contraseña superusuario no es usuario normal
+  // "heroku_6708e182defce95" || config.development.database, // nombre db
+  // "b97fd07c108495" || config.development.username, // nombre superusuario
+  // "4fa8f138" || config.development.password, // nombre contraseña superusuario no es usuario normal
   {
     host: process.env.MYSQL_HOST || config.development.host, // donde esta el banco de datos localhost intenta entrar en variables de entorno no existe y leugo va a config autoexplicativo en config
     port: process.env.MYSQL_PORT || config.development.port || '3306', // cual es el puerto
